@@ -1,0 +1,47 @@
+@baseUrl = http://localhost:3000
+
+### Registro
+# @name registerUser
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Ana Torres",
+  "email": "ana@example.com",
+  "password": "una frase de acceso segura"
+}
+
+### Registro intentando ser admin (debe crear un user)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Intruso",
+  "email": "intruso@example.com",
+  "password": "una frase de acceso segura",
+  "role": "admin"
+}
+
+### Login
+# @name loginUser
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ana@example.com",
+  "password": "una frase de acceso segura"
+}
+
+### Token de Ana
+@userToken = {{loginUser.response.body.accessToken}}
+
+### Perfil
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{userToken}}
+
+### Perfil sin token (401)
+GET {{baseUrl}}/api/auth/me
+
+### Perfil con token mal formado (401)
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer esto.no.es.un.token
