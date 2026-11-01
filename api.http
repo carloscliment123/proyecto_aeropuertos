@@ -209,3 +209,42 @@ Authorization: Bearer {{userToken}}
 ### Filtrar aeropuertos por Valencia
 GET {{baseUrl}}/api/airports?cityId={{valenciaId}}
 Authorization: Bearer {{userToken}}
+
+
+### Registro con correo duplicado (409)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{ "name": "Ana Torres", "email": "ana@example.com", "password": "una frase de acceso segura" }
+
+### Registro con datos inválidos (422)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{ "name": "A", "email": "no-es-un-correo", "password": "corta" }
+
+### Login con contraseña incorrecta (401)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "ana@example.com", "password": "otra contraseña" }
+
+### Login con correo inexistente (401, mismo mensaje)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "nadie@example.com", "password": "una frase de acceso segura" }
+
+### Modificar aeropuerto con cityId inexistente (404)
+PUT {{baseUrl}}/api/airports/{{airportId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "iataCode": "VLC", "name": "Valencia Airport", "cityId": 9999 }
+
+### Modificar aeropuerto con el IATA de otro (409)
+PUT {{baseUrl}}/api/airports/{{airportId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "iataCode": "MAD", "name": "Valencia Airport", "cityId": {{valenciaId}} }
