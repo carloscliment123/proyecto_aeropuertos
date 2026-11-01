@@ -20,7 +20,6 @@ export async function login({ email, password }) {
   const user = await users.findByEmail(email);
   const ok = user && (await bcrypt.compare(password, user.password_hash));
   if (!ok) {
-    // mismo mensaje en ambos casos: no revelamos qué campo falló
     throw new AppError(401, 'INVALID_CREDENTIALS', 'Credenciales incorrectas.');
   }
 

@@ -26,7 +26,7 @@ export function validateRegister(body = {}) {
     details.password = 'La contraseña debe tener entre 8 y 72 caracteres.';
 
   if (Object.keys(details).length > 0) fail(details);
-  return { name, email, password }; // el role del body ni se lee
+  return { name, email, password }; 
 }
 
 export function validateLogin(body = {}) {

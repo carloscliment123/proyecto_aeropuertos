@@ -15,7 +15,6 @@ export async function authenticate(req, res, next) {
     throw new AppError(401, 'UNAUTHORIZED', 'Token no válido o caducado.');
   }
 
-  // El rol se consulta en la BD, no se fía del token
   const user = await findById(Number(payload.sub));
   if (!user) {
     throw new AppError(401, 'UNAUTHORIZED', 'Token no válido o caducado.');

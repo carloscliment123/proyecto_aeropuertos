@@ -19,7 +19,7 @@ export async function findById(id) {
 export async function create({ name, email, passwordHash }) {
   const [result] = await pool.query(
     'INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)',
-    [name, email, passwordHash, 'user'] // el rol va fijo: nunca viene del cliente
+    [name, email, passwordHash, 'user'] 
   );
   return result.insertId;
 }
