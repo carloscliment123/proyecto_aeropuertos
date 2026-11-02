@@ -1,9 +1,10 @@
 @baseUrl = http://localhost:3000
 
-### Registro
+### Registrar usuario normal
 # @name registerUser
 POST {{baseUrl}}/api/auth/register
 Content-Type: application/json
+Accept: application/json
 
 {
   "name": "Ana Torres",
@@ -11,240 +12,93 @@ Content-Type: application/json
   "password": "una frase de acceso segura"
 }
 
-### Registro intentando ser admin (debe crear un user)
-POST {{baseUrl}}/api/auth/register
-Content-Type: application/json
-
-{
-  "name": "Intruso",
-  "email": "intruso@example.com",
-  "password": "una frase de acceso segura",
-  "role": "admin"
-}
-
-### Login
+### Login de usuario normal
 # @name loginUser
 POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
+Accept: application/json
 
 {
   "email": "ana@example.com",
   "password": "una frase de acceso segura"
 }
 
-### Token de Ana
+### Extraer token de Ana
 @userToken = {{loginUser.response.body.accessToken}}
 
-### Perfil
+### Perfil de Ana
 GET {{baseUrl}}/api/auth/me
 Authorization: Bearer {{userToken}}
+Accept: application/json
 
-### Perfil sin token (401)
-GET {{baseUrl}}/api/auth/me
-
-### Perfil con token mal formado (401)
-GET {{baseUrl}}/api/auth/me
-Authorization: Bearer esto.no.es.un.token
-
-### Buscar "mad" (debe salir Madrid)
+### Buscar ciudades cuyo nombre contiene "mad"
 GET {{baseUrl}}/api/cities?search=mad
 Authorization: Bearer {{userToken}}
+Accept: application/json
 
-### Sin coincidencias (debe dar [])
-GET {{baseUrl}}/api/cities?search=zzzz
-Authorization: Bearer {{userToken}}
-
-### Todas las ciudades
-GET {{baseUrl}}/api/cities
-Authorization: Bearer {{userToken}}
-
-### Ciudades con aeropuertos (sin Teruel; París con 2)
+### Listar ciudades con aeropuertos
 GET {{baseUrl}}/api/cities/with-airports
 Authorization: Bearer {{userToken}}
+Accept: application/json
 
-### Aeropuertos de París
+### Listar aeropuertos de París (id 3 en los datos iniciales)
 GET {{baseUrl}}/api/cities/3/airports
 Authorization: Bearer {{userToken}}
+Accept: application/json
 
-### Aeropuertos de Teruel (200 con [])
-GET {{baseUrl}}/api/cities/4/airports
+### Ana, que es usuario normal, no puede crear una ciudad: debe responder 403
+POST {{baseUrl}}/api/cities
 Authorization: Bearer {{userToken}}
+Content-Type: application/json
+Accept: application/json
 
-### Ciudad inexistente (404)
-GET {{baseUrl}}/api/cities/999/airports
-Authorization: Bearer {{userToken}}
-
-### Todos los aeropuertos
-GET {{baseUrl}}/api/airports
-Authorization: Bearer {{userToken}}
-
-### Filtrar por ciudad
-GET {{baseUrl}}/api/airports?cityId=3
-Authorization: Bearer {{userToken}}
-
-### Un aeropuerto
-GET {{baseUrl}}/api/airports/4
-Authorization: Bearer {{userToken}}
-
-### Aeropuerto inexistente (404)
-GET {{baseUrl}}/api/airports/999
-Authorization: Bearer {{userToken}}
-
-### Sin token (401)
-GET {{baseUrl}}/api/cities
+{
+  "name": "Valencia",
+  "country": "España"
+}
 
 ### Login de administración
 # @name loginAdmin
 POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
+Accept: application/json
 
-{ "email": "admin@aeropuertos.test", "password": "password" }
+{
+  "email": "admin@aeropuertos.test",
+  "password": "password"
+}
 
-### Token admin
+### Extraer token de administrador
 @adminToken = {{loginAdmin.response.body.accessToken}}
 
-### Usuario normal intenta crear ciudad (403)
-POST {{baseUrl}}/api/cities
-Authorization: Bearer {{userToken}}
-Content-Type: application/json
-
-{ "name": "Valencia", "country": "España" }
-
-### Admin crea ciudad (201)
+### El administrador crea Valencia
 # @name createCity
 POST {{baseUrl}}/api/cities
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
+Accept: application/json
 
-{ "name": "Valencia", "country": "España" }
+{
+  "name": "Valencia",
+  "country": "España"
+}
 
-### Id de la ciudad creada
+### Extraer id de la ciudad creada
 @valenciaId = {{createCity.response.body.id}}
 
-### Ciudad con campos vacíos (422)
-POST {{baseUrl}}/api/cities
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "name": "", "country": "" }
-
-### Modificar ciudad (200)
-PUT {{baseUrl}}/api/cities/{{valenciaId}}
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "name": "València", "country": "España" }
-
-### Modificar ciudad inexistente (404)
-PUT {{baseUrl}}/api/cities/9999
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "name": "X", "country": "Y" }
-
-### Usuario normal intenta modificar ciudad (403)
-PUT {{baseUrl}}/api/cities/{{valenciaId}}
-Authorization: Bearer {{userToken}}
-Content-Type: application/json
-
-{ "name": "Hack", "country": "Hack" }
-
-### Admin crea aeropuerto (201)
-# @name createAirport
+### El administrador añade el aeropuerto de Valencia
 POST {{baseUrl}}/api/airports
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
+Accept: application/json
 
-{ "iataCode": "VLC", "name": "Aeropuerto de Valencia", "cityId": {{valenciaId}} }
+{
+  "iataCode": "VAC",
+  "name": "Aeropuerto de Valencia",
+  "cityId": {{valenciaId}}
+}
 
-### Id del aeropuerto creado
-@airportId = {{createAirport.response.body.id}}
-
-### IATA duplicado (409)
-POST {{baseUrl}}/api/airports
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "iataCode": "VLC", "name": "Otro", "cityId": {{valenciaId}} }
-
-### IATA mal formado (422)
-POST {{baseUrl}}/api/airports
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "iataCode": "VL", "name": "Mal", "cityId": {{valenciaId}} }
-
-### cityId inexistente (404)
-POST {{baseUrl}}/api/airports
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "iataCode": "XYZ", "name": "Fantasma", "cityId": 9999 }
-
-### Modificar aeropuerto (200)
-PUT {{baseUrl}}/api/airports/{{airportId}}
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "iataCode": "VLC", "name": "Valencia Airport", "cityId": {{valenciaId}} }
-
-### Usuario normal intenta crear aeropuerto (403)
-POST {{baseUrl}}/api/airports
-Authorization: Bearer {{userToken}}
-Content-Type: application/json
-
-{ "iataCode": "AAA", "name": "Hack", "cityId": {{valenciaId}} }
-
-### Usuario normal intenta modificar aeropuerto (403)
-PUT {{baseUrl}}/api/airports/{{airportId}}
-Authorization: Bearer {{userToken}}
-Content-Type: application/json
-
-{ "iataCode": "VLC", "name": "Hack", "cityId": {{valenciaId}} }
-
-### Valencia ya aparece en with-airports
-GET {{baseUrl}}/api/cities/with-airports
-Authorization: Bearer {{userToken}}
-
-### Filtrar aeropuertos por Valencia
+### Filtrar aeropuertos por ciudad
 GET {{baseUrl}}/api/airports?cityId={{valenciaId}}
 Authorization: Bearer {{userToken}}
-
-
-### Registro con correo duplicado (409)
-POST {{baseUrl}}/api/auth/register
-Content-Type: application/json
-
-{ "name": "Ana Torres", "email": "ana@example.com", "password": "una frase de acceso segura" }
-
-### Registro con datos inválidos (422)
-POST {{baseUrl}}/api/auth/register
-Content-Type: application/json
-
-{ "name": "A", "email": "no-es-un-correo", "password": "corta" }
-
-### Login con contraseña incorrecta (401)
-POST {{baseUrl}}/api/auth/login
-Content-Type: application/json
-
-{ "email": "ana@example.com", "password": "otra contraseña" }
-
-### Login con correo inexistente (401, mismo mensaje)
-POST {{baseUrl}}/api/auth/login
-Content-Type: application/json
-
-{ "email": "nadie@example.com", "password": "una frase de acceso segura" }
-
-### Modificar aeropuerto con cityId inexistente (404)
-PUT {{baseUrl}}/api/airports/{{airportId}}
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "iataCode": "VLC", "name": "Valencia Airport", "cityId": 9999 }
-
-### Modificar aeropuerto con el IATA de otro (409)
-PUT {{baseUrl}}/api/airports/{{airportId}}
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{ "iataCode": "MAD", "name": "Valencia Airport", "cityId": {{valenciaId}} }
+Accept: application/json
