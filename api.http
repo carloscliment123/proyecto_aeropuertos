@@ -104,6 +104,8 @@ Authorization: Bearer {{userToken}}
 Accept: application/json
 
 
+##2 Adam
+
 ### El administrador borra Teruel (id 4, sin aeropuertos) --> 204
 DELETE {{baseUrl}}/api/cities/4
 Authorization: Bearer {{adminToken}}
@@ -146,6 +148,7 @@ Accept: application/json
 
 
 
+##4 Adam
 
 ### Listar todos los aeropuertos (sin filtros)
 GET {{baseUrl}}/api/airports
@@ -165,4 +168,21 @@ Accept: application/json
 ### Buscar aeropuertos combinando search "par" y cityId 3 (solo los de Paris que coinciden)
 GET {{baseUrl}}/api/airports?search=par&cityId=3
 Authorization: Bearer {{userToken}}
+Accept: application/json
+
+
+##6 Adam
+
+### Listar todos los usuarios como administrador (debe responder 200 sin password_hash)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### Un usuario normal intenta listar los usuarios (debe responder 403)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Listar usuarios sin token (debe responder 401)
+GET {{baseUrl}}/api/users
 Accept: application/json

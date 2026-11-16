@@ -23,3 +23,9 @@ export async function create({ name, email, passwordHash }) {
   );
   return result.insertId;
 }
+export async function findAll() {
+  const [rows] = await pool.query(
+    'SELECT id, name, email, role FROM users ORDER BY name'
+  );
+  return rows;
+}

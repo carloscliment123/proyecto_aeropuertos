@@ -4,6 +4,9 @@ import authRoutes from './routes/authRoutes.js';
 import cityRoutes from './routes/cityRoutes.js';
 import airportRoutes from './routes/airportRoutes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
+import userRoutes from './routes/userRoutes.js';
+import { authenticate } from './middleware/authenticate.js';
+import { authorizeAdmin } from './middleware/authorizeAdmin.js';
 
 const app = express();
 app.use(express.json());
@@ -16,6 +19,7 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/cities', cityRoutes);
 app.use('/api/airports', airportRoutes);
+app.use('/api/users', authenticate, authorizeAdmin, userRoutes);
 
 app.use(notFound);     
 app.use(errorHandler);  
