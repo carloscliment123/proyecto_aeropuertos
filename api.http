@@ -102,3 +102,25 @@ Accept: application/json
 GET {{baseUrl}}/api/airports?cityId={{valenciaId}}
 Authorization: Bearer {{userToken}}
 Accept: application/json
+
+
+
+### El administrador borra Teruel (id 4, sin aeropuertos) --> 204
+DELETE {{baseUrl}}/api/cities/4
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### Borrar París (id 3, tiene aeropuertos) --> 409
+DELETE {{baseUrl}}/api/cities/3
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### Un usuario normal intenta borrar una ciudad --> 403
+DELETE {{baseUrl}}/api/cities/4
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Borrar una ciudad que no existe --> 404
+DELETE {{baseUrl}}/api/cities/9999
+Authorization: Bearer {{adminToken}}
+Accept: application/json

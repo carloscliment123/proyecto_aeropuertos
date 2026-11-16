@@ -32,3 +32,17 @@ export async function update(req, res) {
   const data = validateCity(req.body);
   res.json(await cityRepo.update(id, data));
 }
+
+export async function remove(req, res) {
+  const id = parseId(req.params.id);
+  const city = await cityRepo.findById(id);
+  if (!city) throw new AppError(404, 'CITY_NOT_FOUND', 'La ciudad no existe');
+  try {
+    await cityRepo.remove(id);
+    res.status(204).end();
+  } catch (err) {
+    if (err.code === 'ER_ROW_IS_REFERENCED_2')
+      throw new AppError(409, 'CITY_HAS_AIRPORTS', 'No se puede borrar una ciudad que tiene aeropuertos');
+    throw err;
+  }
+}

@@ -49,3 +49,7 @@ export async function update(id, { name, country }) {
   );
   return { id, name, country };
 }
+
+export async function remove(id) {
+  await pool.query('DELETE FROM cities WHERE id = ?', [id]);
+}

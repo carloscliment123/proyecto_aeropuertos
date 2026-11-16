@@ -7,6 +7,7 @@ import {
   listAirports,
   create,
   update,
+  remove,
 } from '../controllers/cityController.js';
 
 const router = Router();
@@ -17,5 +18,6 @@ router.get('/with-airports', listWithAirports); // antes que cualquier /:id
 router.get('/:id/airports', listAirports);
 router.post('/', authorizeAdmin, create);
 router.put('/:id', authorizeAdmin, update);
+router.delete('/:id', authorizeAdmin, remove);
 
 export default router;
