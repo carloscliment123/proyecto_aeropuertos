@@ -102,3 +102,19 @@ Accept: application/json
 GET {{baseUrl}}/api/airports?cityId={{valenciaId}}
 Authorization: Bearer {{userToken}}
 Accept: application/json
+
+
+### Ver la ciudad con id 1 (debe devolver Madrid)
+GET {{baseUrl}}/api/cities/1
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Ciudad que no existe: debe responder 404 CITY_NOT_FOUND
+GET {{baseUrl}}/api/cities/9999
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Id con formato incorrecto: debe responder 404
+GET {{baseUrl}}/api/cities/abc
+Authorization: Bearer {{userToken}}
+Accept: application/json

@@ -32,3 +32,9 @@ export async function update(req, res) {
   const data = validateCity(req.body);
   res.json(await cityRepo.update(id, data));
 }
+
+export async function getOne(req, res) {
+  const city = await cityRepo.findById(parseId(req.params.id));
+  if (!city) throw new AppError(404, 'CITY_NOT_FOUND', 'La ciudad no existe.');
+  res.json(city);
+}
