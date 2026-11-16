@@ -104,7 +104,6 @@ Authorization: Bearer {{userToken}}
 Accept: application/json
 
 
-
 ### El administrador borra Teruel (id 4, sin aeropuertos) --> 204
 DELETE {{baseUrl}}/api/cities/4
 Authorization: Bearer {{adminToken}}
@@ -123,4 +122,19 @@ Accept: application/json
 ### Borrar una ciudad que no existe --> 404
 DELETE {{baseUrl}}/api/cities/9999
 Authorization: Bearer {{adminToken}}
+
+=======
+### Ver la ciudad con id 1 (debe devolver Madrid)
+GET {{baseUrl}}/api/cities/1
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Ciudad que no existe: debe responder 404 CITY_NOT_FOUND
+GET {{baseUrl}}/api/cities/9999
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Id con formato incorrecto: debe responder 404
+GET {{baseUrl}}/api/cities/abc
+Authorization: Bearer {{userToken}}
 Accept: application/json

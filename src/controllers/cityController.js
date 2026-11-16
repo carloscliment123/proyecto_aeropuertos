@@ -46,3 +46,8 @@ export async function remove(req, res) {
     throw err;
   }
 }
+export async function getOne(req, res) {
+  const city = await cityRepo.findById(parseId(req.params.id));
+  if (!city) throw new AppError(404, 'CITY_NOT_FOUND', 'La ciudad no existe.');
+  res.json(city);
+}
