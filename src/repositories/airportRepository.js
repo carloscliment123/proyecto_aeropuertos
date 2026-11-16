@@ -6,30 +6,36 @@ const SELECT_FULL = `
     FROM airports a
     JOIN cities c ON c.id = a.city_id`;
 
-export async function findAll(cityId) {
+export async function findAll({ cityId = null, search = null } = {}) {
+  let sql = SELECT_FULL;
+  const conditions = [];
+  const params = [];
+
   if (cityId) {
-    const [rows] = await pool.query(
-      `${SELECT_FULL} WHERE a.city_id = ? ORDER BY a.iata_code`,
-      [cityId]
-    );
-    return rows;
+    conditions.push('a.city_id = ?');
+    params.push(cityId);
   }
-  const [rows] = await pool.query(`${SELECT_FULL} ORDER BY a.iata_code`);
+
+  if (search) {
+    const escapedSearch = search.replace(/[\\%_]/g, '\\$&');
+    const likePattern = `%${escapedSearch}%`;
+    conditions.push('(a.name LIKE ? OR a.iata_code LIKE ?)');
+    params.push(likePattern, likePattern);
+  }
+
+  if (conditions.length > 0) {
+    sql += ' WHERE ' + conditions.join(' AND ');
+  }
+
+  sql += ' ORDER BY a.id';
+
+  const [rows] = await pool.query(sql, params);
   return rows;
 }
 
 export async function findById(id) {
   const [rows] = await pool.query(`${SELECT_FULL} WHERE a.id = ?`, [id]);
   return rows[0] ?? null;
-}
-
-export async function findByCityId(cityId) {
-  const [rows] = await pool.query(
-    `SELECT id, iata_code AS iataCode, name, city_id AS cityId
-       FROM airports WHERE city_id = ? ORDER BY iata_code`,
-    [cityId]
-  );
-  return rows;
 }
 
 export async function create({ iataCode, name, cityId }) {

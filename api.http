@@ -123,7 +123,10 @@ Accept: application/json
 DELETE {{baseUrl}}/api/cities/9999
 Authorization: Bearer {{adminToken}}
 
-=======
+
+
+
+
 ### Ver la ciudad con id 1 (debe devolver Madrid)
 GET {{baseUrl}}/api/cities/1
 Authorization: Bearer {{userToken}}
@@ -136,5 +139,30 @@ Accept: application/json
 
 ### Id con formato incorrecto: debe responder 404
 GET {{baseUrl}}/api/cities/abc
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+
+
+
+
+
+### Listar todos los aeropuertos (sin filtros)
+GET {{baseUrl}}/api/airports
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Buscar aeropuertos cuyo nombre contiene "mad" (debe devolver Madrid)
+GET {{baseUrl}}/api/airports?search=mad
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Buscar aeropuertos por codigo IATA "cdg" (debe devolver Paris-Charles de Gaulle)
+GET {{baseUrl}}/api/airports?search=cdg
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Buscar aeropuertos combinando search "par" y cityId 3 (solo los de Paris que coinciden)
+GET {{baseUrl}}/api/airports?search=par&cityId=3
 Authorization: Bearer {{userToken}}
 Accept: application/json

@@ -15,7 +15,8 @@ function translateDbError(err) {
 
 export async function list(req, res) {
   const cityId = parseOptionalCityId(req.query.cityId);
-  res.json(await airportRepo.findAll(cityId));
+  const search = typeof req.query.search === 'string' ? req.query.search.trim() : null;
+  res.json(await airportRepo.findAll({ cityId, search }));
 }
 
 export async function getOne(req, res) {
