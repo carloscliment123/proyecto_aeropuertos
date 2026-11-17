@@ -6,7 +6,7 @@ const SELECT_FULL = `
     FROM airports a
     JOIN cities c ON c.id = a.city_id`;
 
-export async function findAll({ cityId = null, search = null } = {}) {
+export async function findAll({ cityId = null, search = null, limit, offset } = {}) {
   let sql = SELECT_FULL;
   const conditions = [];
   const params = [];
@@ -27,7 +27,8 @@ export async function findAll({ cityId = null, search = null } = {}) {
     sql += ' WHERE ' + conditions.join(' AND ');
   }
 
-  sql += ' ORDER BY a.id';
+  sql += ' ORDER BY a.id LIMIT ? OFFSET ?';
+  params.push(limit, offset);
 
   const [rows] = await pool.query(sql, params);
   return rows;

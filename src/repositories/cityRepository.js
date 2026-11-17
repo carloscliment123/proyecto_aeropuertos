@@ -1,16 +1,17 @@
 import { pool } from '../config/database.js';
 
-export async function findAll(search) {
+export async function findAll(search, { limit, offset }) {
   if (!search) {
     const [rows] = await pool.query(
-      'SELECT id, name, country FROM cities ORDER BY name'
+      'SELECT id, name, country FROM cities ORDER BY name LIMIT ? OFFSET ?',
+      [limit, offset]
     );
     return rows;
   }
   const pattern = `%${search.replace(/[\\%_]/g, '\\$&')}%`;
   const [rows] = await pool.query(
-    'SELECT id, name, country FROM cities WHERE name LIKE ? ORDER BY name',
-    [pattern]
+    'SELECT id, name, country FROM cities WHERE name LIKE ? ORDER BY name LIMIT ? OFFSET ?',
+    [pattern, limit, offset]
   );
   return rows;
 }
