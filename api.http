@@ -128,6 +128,7 @@ Authorization: Bearer {{adminToken}}
 
 
 
+## 1 carlos
 
 ### Ver la ciudad con id 1 (debe devolver Madrid)
 GET {{baseUrl}}/api/cities/1
@@ -187,6 +188,7 @@ Accept: application/json
 GET {{baseUrl}}/api/users
 Accept: application/json
 
+## 3 carlos
 
 ### Crear un aeropuerto de prueba para borrarlo (usa Teruel, id 4)
 # @name createTestAirport
