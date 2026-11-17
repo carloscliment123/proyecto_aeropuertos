@@ -128,6 +128,7 @@ Authorization: Bearer {{adminToken}}
 
 
 
+## 1 carlos
 
 ### Ver la ciudad con id 1 (debe devolver Madrid)
 GET {{baseUrl}}/api/cities/1
@@ -185,38 +186,4 @@ Accept: application/json
 
 ### Listar usuarios sin token (debe responder 401)
 GET {{baseUrl}}/api/users
-Accept: application/json
-
-
-## 5 Carlos
-
-
-### Paginación: solo 2 ciudades
-GET {{baseUrl}}/api/cities?page=1&limit=2
-Authorization: Bearer {{userToken}}
-Accept: application/json
-
-### Segunda página de ciudades
-GET {{baseUrl}}/api/cities?page=2&limit=2
-Authorization: Bearer {{userToken}}
-Accept: application/json
-
-### Paginación combinada con búsqueda
-GET {{baseUrl}}/api/cities?search=a&page=1&limit=1
-Authorization: Bearer {{userToken}}
-Accept: application/json
-
-### Aeropuertos paginados
-GET {{baseUrl}}/api/airports?page=1&limit=2
-Authorization: Bearer {{userToken}}
-Accept: application/json
-
-### limit=0 --> 422 con el detalle del campo
-GET {{baseUrl}}/api/cities?limit=0
-Authorization: Bearer {{userToken}}
-Accept: application/json
-
-### page=abc --> 422
-GET {{baseUrl}}/api/cities?page=abc
-Authorization: Bearer {{userToken}}
 Accept: application/json
