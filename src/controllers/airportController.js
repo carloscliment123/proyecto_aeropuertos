@@ -49,3 +49,11 @@ export async function update(req, res) {
     throw translateDbError(err);
   }
 }
+
+export async function remove(req, res) {
+  const id = parseId(req.params.id);
+  if (!(await airportRepo.findById(id)))
+    throw new AppError(404, 'AIRPORT_NOT_FOUND', 'El aeropuerto no existe.');
+  await airportRepo.remove(id);
+  res.status(204).end();
+}

@@ -53,3 +53,7 @@ export async function update(id, { iataCode, name, cityId }) {
   );
   return { id, iataCode, name, cityId };
 }
+
+export async function remove(id) {
+  await pool.query('DELETE FROM airports WHERE id = ?', [id]);
+}

@@ -186,3 +186,40 @@ Accept: application/json
 ### Listar usuarios sin token (debe responder 401)
 GET {{baseUrl}}/api/users
 Accept: application/json
+
+
+### Crear un aeropuerto de prueba para borrarlo (usa Teruel, id 4)
+# @name createTestAirport
+POST {{baseUrl}}/api/airports
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "iataCode": "TEV",
+  "name": "Aeropuerto de Teruel",
+  "cityId": 4
+}
+
+### Extraer el id del aeropuerto creado
+@testAirportId = {{createTestAirport.response.body.id}}
+
+### El administrador borra el aeropuerto --> 204
+DELETE {{baseUrl}}/api/airports/{{testAirportId}}
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### Comprobar que ya no existe --> 404
+GET {{baseUrl}}/api/airports/{{testAirportId}}
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Un usuario normal intenta borrar un aeropuerto --> 403
+DELETE {{baseUrl}}/api/airports/1
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### Borrar un aeropuerto que no existe --> 404
+DELETE {{baseUrl}}/api/airports/9999
+Authorization: Bearer {{adminToken}}
+Accept: application/json
