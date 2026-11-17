@@ -1,7 +1,7 @@
 import * as airportRepo from '../repositories/airportRepository.js';
 import * as cityRepo from '../repositories/cityRepository.js';
 import { AppError } from '../errors/AppError.js';
-import { parseId, parseOptionalCityId } from '../validators/commonValidator.js';
+import { parseId, parseOptionalCityId, parsePagination } from '../validators/commonValidator.js';
 import { validateAirport } from '../validators/airportValidator.js';
 
 // Traduce errores de MySQL a errores HTTP del contrato
@@ -16,7 +16,8 @@ function translateDbError(err) {
 export async function list(req, res) {
   const cityId = parseOptionalCityId(req.query.cityId);
   const search = typeof req.query.search === 'string' ? req.query.search.trim() : null;
-  res.json(await airportRepo.findAll({ cityId, search }));
+  const { limit, offset } = parsePagination(req.query);
+  res.json(await airportRepo.findAll({ cityId, search, limit, offset }));
 }
 
 export async function getOne(req, res) {

@@ -1,12 +1,13 @@
 import * as cityRepo from '../repositories/cityRepository.js';
 import * as airportRepo from '../repositories/airportRepository.js';
 import { AppError } from '../errors/AppError.js';
-import { parseId } from '../validators/commonValidator.js';
+import { parseId, parsePagination } from '../validators/commonValidator.js';
 import { validateCity } from '../validators/cityValidator.js';
 
 export async function list(req, res) {
   const search = typeof req.query.search === 'string' ? req.query.search.trim() : '';
-  res.json(await cityRepo.findAll(search));
+  const pagination = parsePagination(req.query);
+  res.json(await cityRepo.findAll(search, pagination));
 }
 
 export async function listWithAirports(req, res) {
