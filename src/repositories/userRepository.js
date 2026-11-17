@@ -29,3 +29,8 @@ export async function findAll() {
   );
   return rows;
 }
+
+export async function updateRole(id, role) {
+  await pool.query('UPDATE users SET role = ? WHERE id = ?', [role, id]);
+  return findById(id);
+}

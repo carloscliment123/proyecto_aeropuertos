@@ -187,3 +187,75 @@ Accept: application/json
 ### Listar usuarios sin token (debe responder 401)
 GET {{baseUrl}}/api/users
 Accept: application/json
+
+
+## 7 Carlos
+
+### El administrador convierte a Ana en admin --> 200 con role "admin"
+# Cambia el 2 por el id de Ana (lo ves en GET /api/users)
+PUT {{baseUrl}}/api/users/2/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "role": "admin"
+}
+
+### Devolver a Ana al rol user --> 200 con role "user"
+PUT {{baseUrl}}/api/users/2/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "role": "user"
+}
+
+### Rol que no existe --> 422
+PUT {{baseUrl}}/api/users/2/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "role": "superadmin"
+}
+
+### Sin rol en el body --> 422
+PUT {{baseUrl}}/api/users/2/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+### El administrador intenta quitarse su propio rol (id 1) --> 409
+PUT {{baseUrl}}/api/users/1/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "role": "user"
+}
+
+### Un usuario normal intenta cambiar un rol --> 403
+PUT {{baseUrl}}/api/users/2/role
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "role": "admin"
+}
+
+### Usuario que no existe --> 404
+PUT {{baseUrl}}/api/users/9999/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "role": "user"
+}
